@@ -1,30 +1,18 @@
-import { Outlet, Route, Routes } from "react-router-dom"
-import { TicketForm } from "../tickets/TicketForm"
-import { TicketList } from "../tickets/TicketList"
-import { TicketSearch } from "../tickets/TicketSearch"
+import { EmployeeViews } from "./EmployeeViews"
+import { CustomerViews } from "./CustomerViews"
 
 export const ApplicationViews = () => {
-	return (
-        <Routes>
-            <Route path="/" element={
-                <>
-                    <h1>Honey Rae Repair Shop</h1>
-                    <div>Your one-stop-shop to get all your electronics fixed</div>
+	
+    const localHoneyUser = localStorage.getItem("honey_user")
+    const honeyUserObject = JSON.parse(localHoneyUser)
 
-                    <Outlet />
-                </>
-            }>
-                {/*we want to componenets to be displayed when the route is "tickets"*/}
-                <Route path="tickets" element={ 
-                    <>
-                        <TicketSearch />
-                        <TicketList />
-                    </>
-               
-               } /> 
-
-				<Route path="ticket/create" element={ <TicketForm /> } />
-            </Route>
-        </Routes>
-    )
+    if (honeyUserObject.staff) {
+        // Return employee views
+        return <EmployeeViews />
+    }
+    else {
+        // Return customer views
+        return <CustomerViews />
+    }
+    
 }

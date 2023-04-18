@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "./Tickets.css"
 
-export const TicketList = () => {
+export const TicketList = ( { searchTermState }) => {
     const [tickets, setTickets] = useState([]) // tickets variable initial state is an empty array; we're going to fill that array with data from the API, setTickets is a function
     const [filteredTickets, setFiltered] = useState([])
     const [emergency, setEmergency] = useState(false) //initial state of setEmergency will be false
@@ -14,6 +14,18 @@ export const TicketList = () => {
 
     const localHoneyUser = localStorage.getItem("honey_user")
     const honeyUserObject = JSON.parse(localHoneyUser)
+
+    // Filter down all of the tickets to ones that match what has been typed into Ticket Search Box (only matching first word, not just any word); we are updating the state of setFiltered
+    useEffect(
+        () => {
+        //    console.log(searchTermState) 
+            const searchedTickets = tickets.filter(ticket => {
+                return ticket.description.toLowerCase().startsWith(searchTermState.toLowerCase()) //.toLowerCase makes it so the search box is not case sensitive
+            })
+            setFiltered(searchedTickets)
+        },
+        [ searchTermState ]
+    )
     
     useEffect(
         () => {

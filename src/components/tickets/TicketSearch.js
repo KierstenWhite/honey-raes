@@ -1,8 +1,14 @@
 // Ticket Search Box
-export const TicketSearch = () => {
+export const TicketSearch = ({ setterFunction }) => {
     return (
         <div>
-            <input type="text" placeholder="Enter search terms" />
+            <input 
+                onChange={
+                    (changeEvent) => {
+                        setterFunction(changeEvent.target.value)
+                    }
+                }
+            type="text" placeholder="Enter search terms" />
         </div>
     )
 }

@@ -4,6 +4,7 @@ import { EmployeeList } from "../employees/EmployeeList"
 import { EmployeeDetails } from "../employees/EmployeeDetails"
 import { CustomerList } from "../customers/CustomerList"
 import { CustomerDetails } from "../customers/CustomerDetails"
+import { Profile } from "../profile/Profile"
 
 export const EmployeeViews = () => {
 	return (
@@ -17,10 +18,11 @@ export const EmployeeViews = () => {
                 </>
             }>
                 <Route path="tickets" element={ <TicketContainer /> } /> 
-                <Route path="employees" element={ <EmployeeList /> } />
+                <Route path="employees" element={ <EmployeeList /> } /> {/* Route to all employees */}
                 <Route path="employees/:employeeId" element={ <EmployeeDetails /> } /> {/* putting :variable name will make it be like employees/1 if you want an individual view */}
-                <Route path="customers" element={ <CustomerList /> } />
+                <Route path="customers" element={ <CustomerList /> } /> 
                 <Route path="customers/:customerId" element={ <CustomerDetails /> } /> 
+                <Route path="profile" element={ <Profile />} /> 
             </Route>
         </Routes>
     )

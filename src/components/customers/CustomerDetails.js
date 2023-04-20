@@ -8,7 +8,7 @@ export const CustomerDetails = () => {
 
     useEffect(
         () => {
-           fetch (`http://localhost:8088/customers?_expand=user&userId=${customerId}`) //expanding to include tickets that each employee are working on and match with their employeeId
+           fetch (`http://localhost:8088/customers?_expand=user&userId=${customerId}`)
             .then(response => response.json())
             .then((data) => {
                 const singleCustomer = data[0]
@@ -25,3 +25,4 @@ export const CustomerDetails = () => {
                     <div>Phone Number: {customer?.phoneNumber}</div>
             </section>
 }
+

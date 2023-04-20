@@ -4,9 +4,11 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "./Tickets.css"
+import { Ticket } from "./Ticket"
 
 export const TicketList = ( { searchTermState }) => {
     const [tickets, setTickets] = useState([]) // tickets variable initial state is an empty array; we're going to fill that array with data from the API, setTickets is a function
+    const [employees, setEmployees] = useState([])
     const [filteredTickets, setFiltered] = useState([])
     const [emergency, setEmergency] = useState(false) //initial state of setEmergency will be false
     const [openOnly, updateOpenOnly] = useState(false)
@@ -39,14 +41,24 @@ export const TicketList = ( { searchTermState }) => {
         },
         [emergency]
     )
+        // we took the fetch call out of the useEffect below so we can invoke it whenever we want
+    const getAllTickets = () => {
+        // console.log("Initial state of tickets", tickets) // View the initial state of tickets
+        fetch (`http://localhost:8088/serviceTickets?_embed=employeeTickets`) // Fetch/go get all of the tickets
+        .then(response => response.json()) // get the response back, parse to json, put it back into a Javascript array
+        .then((ticketArray) => {
+            setTickets(ticketArray) // change tickets to entire array of service tickets retreived from API
+        })
+    }
 
     useEffect(
         () => {
-            // console.log("Initial state of tickets", tickets) // View the initial state of tickets
-            fetch (`http://localhost:8088/serviceTickets`) // Fetch/go get all of the tickets
-                .then(response => response.json()) // get the response back, parse to json, put it back into a Javascript array
-                .then((ticketArray) => {
-                    setTickets(ticketArray) // change tickets to entire array of service tickets retreived from API
+            getAllTickets()
+
+            fetch (`http://localhost:8088/employees?_expand=user`) 
+                .then(response => response.json()) 
+                .then((employeeArray) => {
+                    setEmployees(employeeArray)
                 })
         },
         [] //When this array is empty, you are observing initial component state
@@ -104,13 +116,12 @@ export const TicketList = ( { searchTermState }) => {
 
         <article className="tickets">
             {
-                filteredTickets.map( // convert all the objects to their HTML representation
-                    (ticket) => { // callback function - for each ticket, return HTML representation; footer is condensed if/else statement
-                        return <section className="ticket" key={`ticket--${ticket.id}`}>
-                            <header>{ticket.description}</header>
-                            <footer>Emergency: {ticket.emergency ? "🚨" : "No"}</footer>
-                        </section>
-                    }
+                filteredTickets.map( // As this iterates, it will create a new ticket component; the prop is ticketObject; isStaff is also a prop
+                    (ticket) => <Ticket key={`ticket--${ticket.id}`}
+                                        getAllTickets={getAllTickets} //prop sharing the fetch call to rerender after the button is clicked in Ticket.js
+                                        employees= {employees} 
+                                        currentUser={honeyUserObject} //sending the whole object rather than just isStaff = {honeyUserObject.staff}
+                                        ticketObject={ticket} />
                 
                 )
             }

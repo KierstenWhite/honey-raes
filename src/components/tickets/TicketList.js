@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "./Tickets.css"
 import { Ticket } from "./Ticket"
+import { getAllEmployeeUserInformation, getAllTicketsFetch } from "../ApiManager"
 
 export const TicketList = ( { searchTermState }) => {
     const [tickets, setTickets] = useState([]) // tickets variable initial state is an empty array; we're going to fill that array with data from the API, setTickets is a function
@@ -41,11 +42,19 @@ export const TicketList = ( { searchTermState }) => {
         },
         [emergency]
     )
-        // we took the fetch call out of the useEffect below so we can invoke it whenever we want
+    //     // we took the fetch call out of the useEffect below so we can invoke it whenever we want
+    // const getAllTickets = () => {
+    //     // console.log("Initial state of tickets", tickets) // View the initial state of tickets
+    //     fetch (`http://localhost:8088/serviceTickets?_embed=employeeTickets`) // Fetch/go get all of the tickets
+    //     .then(response => response.json()) // get the response back, parse to json, put it back into a Javascript array
+    //     .then((ticketArray) => {
+    //         setTickets(ticketArray) // change tickets to entire array of service tickets retreived from API
+    //     })
+    // }
+
+    
     const getAllTickets = () => {
-        // console.log("Initial state of tickets", tickets) // View the initial state of tickets
-        fetch (`http://localhost:8088/serviceTickets?_embed=employeeTickets`) // Fetch/go get all of the tickets
-        .then(response => response.json()) // get the response back, parse to json, put it back into a Javascript array
+        getAllTicketsFetch()
         .then((ticketArray) => {
             setTickets(ticketArray) // change tickets to entire array of service tickets retreived from API
         })
@@ -55,8 +64,7 @@ export const TicketList = ( { searchTermState }) => {
         () => {
             getAllTickets()
 
-            fetch (`http://localhost:8088/employees?_expand=user`) 
-                .then(response => response.json()) 
+            getAllEmployeeUserInformation()
                 .then((employeeArray) => {
                     setEmployees(employeeArray)
                 })
@@ -130,4 +138,3 @@ export const TicketList = ( { searchTermState }) => {
 } 
 
 /* for above - interpolation in React does not require ${}, just {} */
-

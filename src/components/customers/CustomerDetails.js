@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { getCustomerById } from "../ApiManager"
 
 // Capture the customer id, hook is UseParams (parameters)
 export const CustomerDetails = () => {
@@ -8,8 +9,7 @@ export const CustomerDetails = () => {
 
     useEffect(
         () => {
-           fetch (`http://localhost:8088/customers?_expand=user&userId=${customerId}`)
-            .then(response => response.json())
+           getCustomerById(customerId)
             .then((data) => {
                 const singleCustomer = data[0]
                 updateCustomer(singleCustomer)
@@ -25,4 +25,3 @@ export const CustomerDetails = () => {
                     <div>Phone Number: {customer?.phoneNumber}</div>
             </section>
 }
-

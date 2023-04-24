@@ -1,6 +1,7 @@
 // ticketObject.js is a child component of TicketList.js
 
 import { Link } from "react-router-dom"
+import { ClaimButtonPostFunction, deleteTickets, updateServiceTickets } from "../ApiManager"
 
 export const Ticket = ({ ticketObject, currentUser, employees, getAllTickets }) => { // all the variables in {} are props being passed down from the parent for us to use here (the child)
     
@@ -12,7 +13,7 @@ export const Ticket = ({ ticketObject, currentUser, employees, getAllTickets }) 
     }
     
     // Find the employee profile object for the current user
-    const userEmployee = employees.find(employee => currentUser.id === employee.userId)
+    const userEmployee = employees.find(employee => employee.userId === currentUser.id)
 
     //To Do: Function that determines if the current user can close the ticket
     const canClose = () => {
@@ -28,9 +29,7 @@ export const Ticket = ({ ticketObject, currentUser, employees, getAllTickets }) 
     const deleteButton = () => {
         if (!currentUser.staff) {  //If the person is not staff, return this button
             return <button onClick={() => {
-                fetch(`http://localhost:8088/serviceTickets/${ticketObject.id}`, {
-                    method: "DELETE"
-                })
+                deleteTickets(ticketObject)
                     .then(() => {
                         getAllTickets()
 
@@ -52,14 +51,7 @@ export const Ticket = ({ ticketObject, currentUser, employees, getAllTickets }) 
 
         }
 
-        return fetch(`http://localhost:8088/serviceTickets/${ticketObject.id}`, {
-            method: "PUT", //Method is PUT because we are updating the data
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(copy) //Making a copy and turning it into a string
-        })
-            .then(response => response.json())
+        updateServiceTickets(ticketObject, copy)
             .then(getAllTickets)
     }
 
@@ -68,18 +60,8 @@ export const Ticket = ({ ticketObject, currentUser, employees, getAllTickets }) 
         if (currentUser.staff) {
             return <button
                         onClick={() => {
-                            fetch(`http://localhost:8088/employeeTickets`, {
-                                method: "POST", //send to API, please create this for me
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-                                body: JSON.stringify({
-                                    employeeId: userEmployee.id,
-                                    serviceTicketId: ticketObject.id
-                                })
-                            })
-                                .then(response => response.json()) //parse what you create back out
-                                .then (() => {
+                            ClaimButtonPostFunction(userEmployee, ticketObject)
+                            .then (() => {
                                     // GET the state from the API again so it will rerender after we click the button, display the current state to the user
                                     getAllTickets()
                                 })
@@ -105,7 +87,7 @@ export const Ticket = ({ ticketObject, currentUser, employees, getAllTickets }) 
         <footer>
             {
                 ticketObject.employeeTickets.length
-                    ? `Currently being worked on ${assignedEmployee !== null ? assignedEmployee?.user?.fullName : ""}`
+                    ? `Currently being worked on by ${assignedEmployee !== null ? assignedEmployee?.user?.fullName : ""}`
                     : buttonOrNoButton()
             }
             {

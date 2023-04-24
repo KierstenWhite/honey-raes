@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { getIndividualServiceTickets, getTicketsAndReplace } from "../ApiManager"
 
 
 export const TicketEdit = () => {
@@ -15,8 +16,7 @@ export const TicketEdit = () => {
 
     // TODO: Get the ticket state from the API.
     useEffect(() => {
-        fetch(`http://localhost:8088/serviceTickets/${ticketId}`)
-            .then(response => response.json())
+        getIndividualServiceTickets(ticketId)
             .then((data) => {
                 assignTicket(data)
             })
@@ -28,14 +28,7 @@ export const TicketEdit = () => {
 
         // TODO: Write the fetch for the PUT request to replace the object being edited
 
-        return fetch (`http://localhost:8088/serviceTickets/${ticket.id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(ticket)
-    })
-        .then(response => response.json())
+        getTicketsAndReplace(ticket)
         .then(() => {
            navigate("/tickets") // what does this do?
         })

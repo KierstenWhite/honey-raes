@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import "./Employees.css"
 import { Employee } from "./Employee"
+import { getAllEmployees } from "../ApiManager"
 
 // set its initial state, fetch all the employees from API, and in JSX, will render a list of employees
 export const EmployeeList = () => {
@@ -8,8 +9,7 @@ export const EmployeeList = () => {
 
     useEffect(
         () => {
-            fetch(`http://localhost:8088/users?isStaff=true`) //? - query; isStaff=true - setting parameters for that boolean to find only values that are true
-            .then (response => response.json())
+            getAllEmployees()
             .then((employeeArray) => {
                 setEmployees(employeeArray)
             })

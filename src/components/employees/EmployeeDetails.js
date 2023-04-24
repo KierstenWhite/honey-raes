@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { getEmployeeById } from "../ApiManager"
 
 // Capture the employee id, hook is UseParams (parameters)
 export const EmployeeDetails = () => {
@@ -8,8 +9,7 @@ export const EmployeeDetails = () => {
 
     useEffect(
         () => {
-           fetch (`http://localhost:8088/employees?_expand=user&_embed=employeeTickets&userId=${employeeId}`) //expanding to include tickets that each employee are working on and match with their employeeId
-            .then(response => response.json())
+           getEmployeeById(employeeId)
             .then((data) => {
                 const singleEmployee = data[0]
                 updateEmployee(singleEmployee)
